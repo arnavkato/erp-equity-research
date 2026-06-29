@@ -7,13 +7,13 @@ June 2026
 
 ## Abstract
 
-We test whether the entropy risk premium (ERP) of Chabi-Yo, Doshi, and Zurita (2020) — a signal that earns 18% per year in commodity futures — translates to US equities. Using the Dow Jones Industrial Average constituents (30 names, January 2025–June 2026), ThetaData option chains, and the paper's exact methodology (Barone-Adesi-Whaley de-Americanization, Carr-Madan log-contract integration, Bakshi-Kapadia-Madan risk-neutral moments, 60-day realized cumulant estimator, Fama-MacBeth cross-sectional regressions), we find that the entropy risk premium is empirically indistinguishable from the variance risk premium in equities (cross-sectional correlation 0.98) and carries no predictive power for the cross-section of equity returns beyond variance. We validate our risk-neutral entropy implementation against the published VIX (within 0.1–0.7 vol points on real SPX chains) before drawing conclusions. The null result is structural: in commodity futures, heterogeneous hedging demand generates large independent skewness premia (SRP = 17.6% per year in the original paper); in liquid equities, the higher-moment premia carry no independent cross-sectional information and entropy collapses to a noisy proxy for implied variance.
+We test whether the entropy risk premium (ERP) of Chabi-Yo, Doshi, and Zurita (2020), a signal that earns 18% per year in commodity futures, translates to US equities. Using the Dow Jones Industrial Average constituents (30 names, January 2025–June 2026), ThetaData option chains, and the paper's exact methodology (Barone-Adesi-Whaley de-Americanization, Carr-Madan log-contract integration, Bakshi-Kapadia-Madan risk-neutral moments, 60-day realized cumulant estimator, Fama-MacBeth cross-sectional regressions), we find that the entropy risk premium is empirically indistinguishable from the variance risk premium in equities (cross-sectional correlation 0.98) and carries no predictive power for the cross-section of equity returns beyond variance. We validate our risk-neutral entropy implementation against the published VIX (within 0.1–0.7 vol points on real SPX chains) before drawing conclusions. The null result is structural: in commodity futures, heterogeneous hedging demand generates large independent skewness premia (SRP = 17.6% per year in the original paper); in liquid equities, the higher-moment premia carry no independent cross-sectional information and entropy collapses to a noisy proxy for implied variance.
 
 ---
 
 ## 1. Introduction
 
-Chabi-Yo, Doshi, and Zurita (2020) introduce the *entropy risk premium* — the difference between a security's entropy under the physical (P) and risk-neutral (Q) measures:
+Chabi-Yo, Doshi, and Zurita (2020) introduce the *entropy risk premium*, defined as the difference between a security's entropy under the physical (P) and risk-neutral (Q) measures:
 
 $$\text{ERP}_t = L^P_t[R] - L^Q_t[R]$$
 
@@ -134,32 +134,28 @@ The ERP residuals show larger point estimates than raw ERP, consistent with the 
 
 | Specification | ERP $\hat{\gamma}$ | HAC t | Plain t | VRP t |
 |---|---|---|---|---|
-| ERP only | +0.00699 | +3.71* | +1.53 | — |
+| ERP only | +0.00699 | +3.71* | +1.53 | n/a |
 | ERP + VRP | +0.04864 | +1.17 | +0.90 | −1.02 |
 | ERP + VRP + SRP + KRP | +0.07548 | +1.06 | +0.95 | −0.97 |
 
 *HAC t is inflated on 17 observations; plain t and leave-one-out range [1.16, 2.15] are the reliable statistics.*
 
-The ERP slope is positive in all specifications — the sign is correct. But once VRP is controlled, the ERP slope falls to plain t=0.90 (p≈0.38), confirming that ERP carries no information beyond variance in equities. In the commodity paper, the ERP coefficient survives all controls with t>3. The VRP coefficient itself is insignificant, consistent with the 0.98 collinearity with ERP.
-
-### 4.6 SPX Variance Risk Premium (supplementary)
-
-![SPX VRP 30-day rolling](vol/spx_vrp.png)
-
-For context, the aggregate implied-minus-realized gap is real and persistent at the index level: VIX exceeds trailing 30-day realized vol on **88% of days** in our sample (mean +3.8 vol points). The April 2025 tariff shock is the only major inversion. The premium exists; the cross-sectional equity signal does not.
+The ERP slope is positive in all specifications (the sign is correct). But once VRP is controlled, the ERP slope falls to plain t=0.90 (p≈0.38), confirming that ERP carries no information beyond variance in equities. In the commodity paper, the ERP coefficient survives all controls with t>3. The VRP coefficient itself is insignificant, consistent with the 0.98 collinearity with ERP.
 
 ---
 
 ## 5. Discussion
 
-### 5.1 Why it Works in Commodities but Not Equities
+### 5.1 Possible Reasons for the Null Result in Equities
 
-The paper's central finding — ERP carries information beyond VRP — relies on the commodity market generating large, independent higher-moment premia. Physical commodity hedgers buy crash/skew protection for genuine inventory/delivery risk, creating a real skewness risk premium (SRP = 17.6% per year in the paper) that is mostly independent of the variance premium (corr(ERP,VRP)=0.81 because the ERP captures this skew dimension). When you sort on ERP, you're partly sorting on who is paying large skew premia.
+One possible explanation is a structural difference in hedging demand. In commodity futures, commercial hedgers with genuine inventory/delivery exposure may pay a skewness premium that is largely independent of the variance premium (corr(ERP,VRP)=0.81 in the original paper; SRP = 17.6% per year). When sorting on ERP in that setting, one may partly be sorting on who is paying large skew premia. In liquid equities, this particular mechanism may be weaker or absent.
 
-In liquid equities, this mechanism is absent:
-- Options markets are populated by sophisticated dealers and diversified institutional hedgers, not commercial hedgers with inventory exposure
-- The low-volatility anomaly (high-IV names tend to underperform risk-adjusted) partially offsets any VRP cross-sectional effect
-- Single-name equity skew demand is primarily earnings-driven and event-specific, not a persistent structural cross-sectional feature
+Other possible contributing factors include:
+- Equity options markets are largely intermediated by sophisticated dealers and diversified institutional hedgers, which may reduce persistent cross-sectional mispricing
+- The well-documented low-volatility anomaly (high-IV names tend to underperform on a risk-adjusted basis) may partially offset any VRP cross-sectional effect
+- Single-name equity skew demand may be primarily earnings-driven and event-specific rather than a persistent structural feature
+
+We emphasize that these are candidate explanations consistent with our finding, not established causal claims. Distinguishing among them would require a longer sample, a broader universe, and tests that the data available here do not support.
 
 ### 5.2 Limitations
 
@@ -176,7 +172,7 @@ Newey-West HAC t-statistics on 17 monthly observations are systematically inflat
 
 ## 6. Conclusion
 
-The entropy risk premium, implemented faithfully and validated against the published VIX, fails to predict the cross-section of Dow 30 equity returns beyond the variance risk premium. The structural reason is that in equities, cross-sectional corr(ERP,VRP)=0.98, so entropy is variance in disguise — the higher-moment premia that make ERP distinct in commodities carry no independent cross-sectional information in equities.
+The entropy risk premium, implemented faithfully and validated against the published VIX, fails to predict the cross-section of Dow 30 equity returns beyond the variance risk premium. A likely contributing factor is that in equities, cross-sectional corr(ERP,VRP)=0.98: the higher-moment premia that appear to make ERP distinct from VRP in commodity markets carry no detectable independent cross-sectional information here.
 
 This is a clean negative result, not an implementation failure. The validated measurement stack (option strip, BAW de-Americanization, BKM moments, realized cumulant estimator, Fama-MacBeth) is published in the companion repository and replicates the paper's methodology faithfully on real equity option data.
 
@@ -220,8 +216,6 @@ erp/
   run_paper_tests.py    # Tables 2-4 equivalent
   run_fama_macbeth.py   # Fama-MacBeth with controls
   config.py
-vol/
-  spx_vrp.py            # SPX VRP plot (implied vs realized, 30-day rolling)
 ```
 
 **Requirements:** Python 3.11+, numpy, scipy, pandas, statsmodels, thetadata, python-dotenv, matplotlib.

@@ -23,6 +23,4 @@ python -m erp.run_paper_tests
 | `erp/core/american.py` | Barone-Adesi-Whaley de-Americanization |
 | `erp/vix_check.py` | VIX reconstruction gate — run before trusting results |
 | `erp/run_paper_tests.py` | Tables 2-4 of the original paper, on equities |
-| `vol/spx_vrp.py` | SPX VRP: implied vs realized vol, 30-day rolling |
-
 23 unit tests: `python -m pytest erp/tests/`
