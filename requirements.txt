@@ -1,0 +1,14 @@
+pandas
+numpy
+thetadata
+pyarrow==20.0.0
+plotly
+matplotlib
+httpx
+scipy
+statsmodels
+python-dotenv
+aiohttp
+pandas-market-calendars
+pytest
+ib_insync
